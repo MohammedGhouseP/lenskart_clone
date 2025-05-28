@@ -64,7 +64,7 @@ const ProductPost = () => {
         };
 
         const response = await fetch(
-          "https://harlequin-fawn-tutu.cyclic.app/product",
+          "https://localhost:5000/product",
           {
             method: "POST",
             body: JSON.stringify(payload),
