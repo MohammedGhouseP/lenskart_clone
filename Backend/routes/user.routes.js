@@ -18,8 +18,14 @@ userRouter.get("/", async (req, res) => {
 
 userRouter.post("/register", async (req, res) => {
   const { email, password, first_name, last_name, ph_no } = req.body;
+  if (!password) {
+    return res.status(400).json({ error: "Password is required" });
+  }
+
+  const pwdString = String(password);
+
   try {
-    bcrypt.hash(password, 5, async (err, secure_password) => {
+    bcrypt.hash(pwdString, 10, async (err, secure_password) => {
       if (err) {
         console.log(err);
       } else {

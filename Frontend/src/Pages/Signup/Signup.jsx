@@ -18,7 +18,7 @@ import {
   Input,
   Checkbox,
   InputRightElement,
-  Text
+  Text,
 } from "@chakra-ui/react";
 
 const Signup = () => {
@@ -27,7 +27,7 @@ const Signup = () => {
     last_name: "",
     ph_no: "",
     email: "",
-    password: ""
+    password: "",
   };
 
   const [userData, setUserData] = useState(init);
@@ -41,7 +41,7 @@ const Signup = () => {
   const [Auth, setAuth] = useState();
   const [exist, setExist] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  var flag = false;
+  let flag = false;
 
   const Required = (props) => {
     return (
@@ -110,49 +110,43 @@ const Signup = () => {
     }
   };
 
-  const getData = (body) => {
-    setLoading(true);
+const getData = async (body) => {
+  setLoading(true);
+  setExist(false);
+  setAuth(false);
 
-    fetch(`https://localhost:5000/user`)
-      .then((res) => res.json())
-      .then((res) => {
-        res.map((el) => {
-          if (el.email === body.email) {
-            flag = true;
-            setExist(true);
-            return el;
-          }
-          setLoading(false);
-        });
-      })
-      .then(() => {
-        if (flag === false) {
-          fetch(`https://localhost:5000/user/register`, {
-            method: "POST",
-            body: JSON.stringify(body),
-            headers: {
-              "Content-Type": "application/json"
-            }
-          })
-            .then((res) => res.json())
-            .then((res) => {
-              setAuth(true);
-              setLoading(false);
-              setExist(false);
-            })
-            .catch((err) => setAuth(false))
-            .finally(() => setLoading(false))
-            .finally(() => setExist(false))
-            .finally(() => onClose());
-        } else {
-          setLoading(false);
-        }
-      });
-  };
+  try {
+    const res = await fetch("http://localhost:5000/user");
+    const users = await res.json();
 
-  const handleRegister = () => {
-    getData(userData);
-  };
+    const exists = users.some((u) => u.email === body.email);
+    if (exists) {
+      setExist(true);
+      return;
+    }
+
+    console.log("Sending this data to backend:", body);
+    const registerRes = await fetch("http://localhost:5000/user/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await registerRes.json();
+    console.log("Response from backend:", data);
+
+    setAuth(true);
+    onClose();
+  } catch (err) {
+    console.error("Error in getData:", err);
+    setAuth(false);
+  } finally {
+    setLoading(false);
+  }
+};
+
+const handleRegister = () => {
+  getData(userData);
+};
 
   return (
     <div>

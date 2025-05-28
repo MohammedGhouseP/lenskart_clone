@@ -29,7 +29,7 @@ const AllRoutes = () => {
       <Route
         path="/cart"
         element={
-          <Privateroutes>
+          <Privateroutes>z
             <Cart />
           </Privateroutes>
         }
