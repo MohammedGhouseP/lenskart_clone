@@ -64,7 +64,7 @@ const ProductPost = () => {
         };
 
         const response = await fetch(
-          "https://localhost:5000/product",
+          "process.env.api/product",
           {
             method: "POST",
             body: JSON.stringify(payload),

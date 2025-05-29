@@ -54,64 +54,61 @@ const Login = (props) => {
     setbtn(buton);
   };
 
-  const getData = async () => {
-    try {
-      setLoading(true);
-      setinCorrect(false);
-      if (loginData.email !== "" && loginData.password !== "") {
-        const res = await fetch(
-          "https://localhost:5000/user/login",
-          {
-            method: "POST",
-            body: JSON.stringify(loginData),
-            headers: {
-              "Content-type": "application/json"
-            }
-          }
-        );
-        let data = await res.json();
-        if (res) {
-          const credential = await fetch(
-            "https://localhost:5000/user"
-          );
-          let cred = await credential.json();
-          localStorage.setItem("token", data.token);
-          res1 = cred.filter((el) => el.email === loginData.email);
-          setisAuth(true);
-          setAuthData(res1);
-          if (loginData.email.includes(process.env.admin)) {
-            setLoading(false);
-            setinCorrect(false);
-            onClose();
-            navigate("/productlist");
-          } else {
-            setLoading(false);
-            setinCorrect(false);
-            onClose();
-          }
-        } else {
-          setLoading(false);
-          setinCorrect(true);
-        }
-      }
-    } catch (error) {
-      setLoading(false);
-      setinCorrect(true);
-      console.log("An error occurred. Please try again later.");
-    }
-  };
+ // inside your Login component:
 
-  const handleClick = () => {
+const getData = async () => {
+  if (!loginData.email || !loginData.password) {
+    setinCorrect(true);
+    return;
+  }
+
+  setLoading(true);
+  setinCorrect(false);
+
+  try {
+    // 1. POST to your login endpoint
+    const res = await fetch("process.env.api/user/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(loginData),
+    });
+
+    const data = await res.json();
+
+    // 2. If HTTP 200 and you got a token, it's a success
+    if (res.ok && data.token) {
+      localStorage.setItem("token", data.token);
+      setisAuth(true);
+      setAuthData({ email: loginData.email });  // or whatever you need
+
+      // 3. Close modal and navigate
+      onClose();
+      if (loginData.email === process.env.ADMIN_EMAIL) {
+        navigate("/productlist");
+      } else {
+        navigate("/");       // home page
+      }
+    } else {
+      // 4. Wrong credentials
+      setinCorrect(true);
+    }
+  } catch (err) {
+    console.error("Login error:", err);
+    setinCorrect(true);
+  } finally {
+    setLoading(false);
+  }
+};
+const handleClick = () => {
     loginData.password = "";
     setpass(false);
   };
 
-  const handlesign = () => {
-    setpass(true);
-    if (loginData.password.length > 6) {
-      getData(loginData);
-    }
-  };
+// call this from your button
+const handlesign = () => {
+  getData();
+};
+
 
   return (
     <div>

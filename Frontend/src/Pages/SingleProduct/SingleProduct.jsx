@@ -38,7 +38,7 @@ const SingleProduct = () => {
   };
 
   const fetchSingleProduct = () => {
-    axios(`https://localhost:5000/product/${id}`)
+    axios(`process.env.api/product/${id}`)
       .then((res) => setData(res.data.product))
       .catch((err) => console.log(err));
   };

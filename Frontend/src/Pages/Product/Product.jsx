@@ -29,7 +29,7 @@ const NewProduct = () => {
     setIsLoaded(true);
     try {
       const response = await fetch(
-        `https://localhost:5000/product?sort=${sort}&productRefLink=${productRef}&productType=${types}&gender=${gender}&page=${page}`
+        `process.env.api/product?sort=${sort}&productRefLink=${productRef}&productType=${types}&gender=${gender}&page=${page}`
       );
       const postData = await response.json();
       setProducts(postData);

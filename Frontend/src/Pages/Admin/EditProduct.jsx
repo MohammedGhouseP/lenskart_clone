@@ -36,7 +36,7 @@ const EditProduct = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch(`https://localhost:5000/product/${id}`, {
+    fetch(`process.env.api/product/${id}`, {
       headers: {
         Authorization: localStorage.getItem("token")
       }
@@ -86,7 +86,7 @@ const EditProduct = () => {
       };
 
       const response = await fetch(
-        `https://localhost:5000/product/${id}`,
+        `process.env.api/product/${id}`,
         {
           method: "PATCH",
           headers: {
