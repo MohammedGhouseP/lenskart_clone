@@ -306,7 +306,7 @@ function NavbarCard5() {
             borderBottom: "4px solid teal"
           }}
         >
-          KIDS GLASSES
+          KIDS GLASSES.
         </MenuButton>
 
         <MenuList
